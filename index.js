@@ -137,6 +137,21 @@ async function run() {
             res.send({ result })
 
         });
+        // get user by its role
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email })
+            const isAdmin = user.role === 'admin'
+            res.send({ admin: isAdmin })
+        });
+
+        //deleted user 
+        app.delete('/user/admin/:email', verifyAdmin, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email }
+            const result = await userCollection.deleteOne(filter)
+            res.send(result)
+        });
 
 
     }
