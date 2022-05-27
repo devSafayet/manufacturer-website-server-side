@@ -66,6 +66,23 @@ async function run() {
             const filter = { _id: ObjectId(id) };
             const result = await bikeToolsCollection.deleteOne(filter)
             res.send(result)
+        });
+
+        // Update quantity 
+        app.put('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const quantity = req.body.updatequantity;
+            console.log(quantity);
+            const filter = { _id: ObjectId(id) }
+            const option = { upsert: true };
+            const updatePro = {
+                $set: {
+                    quantity
+                }
+            }
+            const result = await bikeToolsCollection.updateOne(filter, updatePro, option);
+            res.send(result)
         })
 
 
