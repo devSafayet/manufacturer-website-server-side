@@ -105,8 +105,38 @@ async function run() {
             const result = await userCollection.updateOne(filter, updateDoc, options);
             const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET)
             res.send({ result, token })
-        })
+        });
+        // All users
+        app.get('/users', async (req, res) => {
 
+            const result = await userCollection.find().toArray()
+            res.send(result)
+        });
+
+        //Make users admin
+        app.put('/user/admin/:email', verifyAdmin, async (req, res) => {
+            const email = req.params.email
+            const filter = { email: email }
+            const updateDoc = {
+                $set: { role: 'admin' },
+            }
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send({ result })
+
+        });
+        // update user
+        app.put('/userinfo/:email', async (req, res) => {
+            const email = req.params.email
+            const img = req.body
+            console.log(img, email);
+            const filter = { email: email }
+            const updateDoc = {
+                $set: { img: img },
+            }
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send({ result })
+
+        });
 
 
     }
