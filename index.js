@@ -83,6 +83,28 @@ async function run() {
             }
             const result = await bikeToolsCollection.updateOne(filter, updatePro, option);
             res.send(result)
+        });
+        //get specification product
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const biketool = await bikeToolsCollection.findOne(query);
+            res.send(biketool)
+        })
+
+        //send user information in to mongodb
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email
+            const user = req.body
+            const filter = { email: email }
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: user,
+            }
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET)
+            res.send({ result, token })
         })
 
 
