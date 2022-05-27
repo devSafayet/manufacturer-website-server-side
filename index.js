@@ -29,7 +29,7 @@ async function run() {
 
         // get all products
 
-        app.get('/services', async (req, res) => {
+        app.get('/servicesCount', async (req, res) => {
             const count = await bikeToolsCollection.estimatedDocumentCount();
             res.send({ count })
         });
@@ -40,18 +40,35 @@ async function run() {
             const query = {}
             const cursor = bikeToolsCollection.find(query);
 
-            let products;
+            let services;
 
             if (page || size) {
-                products = await cursor.skip(page * size).limit(size).toArray();
+                services = await cursor.skip(page * size).limit(size).toArray();
             }
             else {
-                products = await cursor.toArray();
+                services = await cursor.toArray();
             }
 
 
             res.send(services)
+        });
+        //post tools services
+
+        app.post('/services', async (req, res) => {
+            const service = req.body
+            const result = await bikeToolsCollection.insertOne(service)
+            res.send(result);
+        });
+
+        //delete tools services
+        app.delete('/services/:id', verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bikeToolsCollection.deleteOne(filter)
+            res.send(result)
         })
+
+
 
     }
     finally {
