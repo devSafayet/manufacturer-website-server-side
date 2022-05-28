@@ -166,7 +166,13 @@ async function run() {
             const result = await orderCollection.find({ email }).toArray()
             res.send(result)
         });
-
+        // get specific order
+        app.get('/specificorders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await orderCollection.findOne(query);
+            res.send(order)
+        });
 
     }
     finally {
