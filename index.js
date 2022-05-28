@@ -23,14 +23,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect()
-        const bikeToolsCollection = client.db("motor-bike-tools").collection("services");
+        const toolsCollection = client.db("motor-bike-tools").collection("services");
 
 
 
         // get all products
 
         app.get('/servicesCount', async (req, res) => {
-            const count = await bikeToolsCollection.estimatedDocumentCount();
+            const count = await toolsCollection.estimatedDocumentCount();
             res.send({ count })
         });
         app.get('/services', async (req, res) => {
@@ -38,7 +38,7 @@ async function run() {
             const size = parseInt(req.query.size);
 
             const query = {}
-            const cursor = bikeToolsCollection.find(query);
+            const cursor = toolsCollection.find(query);
 
             let services;
 
@@ -56,7 +56,7 @@ async function run() {
 
         app.post('/services', async (req, res) => {
             const service = req.body
-            const result = await bikeToolsCollection.insertOne(service)
+            const result = await toolsCollection.insertOne(service)
             res.send(result);
         });
 
@@ -64,7 +64,7 @@ async function run() {
         app.delete('/services/:id', verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
-            const result = await bikeToolsCollection.deleteOne(filter)
+            const result = await toolsCollection.deleteOne(filter)
             res.send(result)
         });
 
@@ -193,6 +193,19 @@ async function run() {
             const product = req.body
             const result = await reviewCollection.insertOne(product)
             res.send(result);
+        });
+        //get all review
+        app.get('/getreviews', async (req, res) => {
+            const result = await reviewCollection.find().toArray()
+            res.send(result)
+        });
+
+        //delete review
+        app.delete('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const result = await reviewCollection.deleteOne(filter)
+            res.send(result)
         });
 
 
