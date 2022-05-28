@@ -152,6 +152,20 @@ async function run() {
             const result = await userCollection.deleteOne(filter)
             res.send(result)
         });
+        //post booking order in to database
+        app.post('/orders', async (req, res) => {
+            const orders = req.body;
+            const result = await orderCollection.insertOne(orders);
+            res.send(result)
+        });
+
+
+        //get user all orders
+        app.get('/orders/:email', async (req, res) => {
+            const email = req.params.email
+            const result = await orderCollection.find({ email }).toArray()
+            res.send(result)
+        });
 
 
     }
