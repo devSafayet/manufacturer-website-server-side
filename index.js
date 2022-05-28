@@ -238,11 +238,20 @@ async function run() {
             }
             const result = await paymentCollection.insertOne(payment);
             const updateOrders = await orderCollection.updateOne(filter, updateDoc)
-
-
             res.send(updateOrders)
         });
-
+        //change order after payment and give shifting
+        app.patch("/shiftorders/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    shift: true
+                }
+            }
+            const updateOrders = await orderCollection.updateOne(filter, updateDoc)
+            res.send(updateOrders)
+        });
 
     }
     finally {
@@ -256,5 +265,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log('server runnig', port)
+    console.log(`port is running`, port)
 });
