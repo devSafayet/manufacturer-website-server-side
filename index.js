@@ -173,6 +173,28 @@ async function run() {
             const order = await orderCollection.findOne(query);
             res.send(order)
         });
+        //get all orders
+        app.get('/allorders', async (req, res) => {
+
+            const result = await orderCollection.find({}).toArray()
+            res.send(result)
+        });
+
+        // delete orders 
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(filter)
+            res.send(result)
+        });
+
+        // post review
+        app.post('/review', async (req, res) => {
+            const product = req.body
+            const result = await reviewCollection.insertOne(product)
+            res.send(result);
+        });
+
 
     }
     finally {
