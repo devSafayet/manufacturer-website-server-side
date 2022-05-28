@@ -208,6 +208,41 @@ async function run() {
             res.send(result)
         });
 
+        // send payment into database
+
+        app.post('/create-payment-intent', async (req, res) => {
+            const price = req.body.price;
+            const amount = price * 100;
+            if (amount !== 0) {
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: amount,
+                    currency: 'usd',
+                    payment_method_types: ['card']
+                });
+                res.send({
+                    clientSecret: paymentIntent.client_secret,
+                })
+            }
+        });
+        //store payment and update order information
+
+        app.patch("/orders/:id", async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionID
+                }
+            }
+            const result = await paymentCollection.insertOne(payment);
+            const updateOrders = await orderCollection.updateOne(filter, updateDoc)
+
+
+            res.send(updateOrders)
+        });
+
 
     }
     finally {
