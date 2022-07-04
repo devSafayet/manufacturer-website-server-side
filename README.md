@@ -3,6 +3,9 @@
 ## live site link
  [live site] (https://moto-world-a9ab6.web.app/)
 
+## heroku deploy link
+ [heroku deploy link] (https://blooming-beyond-08690.herokuapp.com)
+
 ## Client side Code link
  [Client side code link] (https://github.com/programming-hero-web-course1/manufacturer-website-client-side-safayet003-admin)
 
